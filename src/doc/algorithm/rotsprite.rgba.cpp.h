@@ -42,7 +42,7 @@ union MyColor {
     uint8_t x[4];
 
     MyColor() {
-        color = 0xff000000;
+        this->color = 0xff000000;
     }
 
     explicit MyColor(int color) {
@@ -61,7 +61,7 @@ union MyColor {
     }
 
     MyColor(const MyColor& other) {
-        color = other.color;
+        this->color = other.color;
     }
 
     inline MyColor& operator =(const MyColor& other) {
@@ -111,7 +111,7 @@ union MyColor {
     }
 
     friend int operator -(MyColor a1, MyColor a2) {
-        if (a1 == a2) {
+        if (a1 == a2 || (a1.a | a2.a) == 0) {
             return 0;
         } else {
             return abs(a1.g - a2.g) + abs(a1.b - a2.b) + abs(a1.r - a2.r) + abs(a1.a - a2.a);
@@ -122,10 +122,10 @@ union MyColor {
         p[0] = x[0];
         p[1] = x[1];
         p[2] = x[2];
-    #if IMG_BITCOUNT == 24
-    #else//IMG_BITCOUNT == 32
+#if IMG_BITCOUNT == 24
+#else//IMG_BITCOUNT == 32
         p[3] = x[3];
-    #endif//IMG_BITCOUNT
+#endif//IMG_BITCOUNT
     }
 };
 
