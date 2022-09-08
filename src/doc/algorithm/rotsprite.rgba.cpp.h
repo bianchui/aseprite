@@ -172,11 +172,6 @@ static void image_scale2x_rgba(Image* dst, const Image* src, int src_w, int src_
         return;
     }
 
-#if REVERSE_IMG
-    src = src + srcLineBytes * (srcImg.height - 1);
-    dst = dst + dstLineBytes * (dstImg.height - 1);
-#endif//REVERSE_IMG
-
     // c7 c8 c9
     // c4 c5 c6 <- src
     // c1 c2 c3
