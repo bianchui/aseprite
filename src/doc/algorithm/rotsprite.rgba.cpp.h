@@ -129,19 +129,6 @@ union MyColor {
     }
 };
 
-static uint8_t*& operator <<(uint8_t*& p, MyColor color) {
-    p[0] = color.x[0];
-    p[1] = color.x[1];
-    p[2] = color.x[2];
-#if IMG_BITCOUNT == 24
-    p += 3;
-#else//IMG_BITCOUNT == 32
-    p[3] = color.x[3];
-    p += 4;
-#endif//IMG_BITCOUNT
-    return p;
-}
-
 static ImageIterator<doc::RgbTraits>& operator <<(ImageIterator<doc::RgbTraits>& it, MyColor color) {
     *it = color.color;
     it += 1;
