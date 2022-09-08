@@ -103,11 +103,11 @@ union MyColor {
     }
 
     inline bool operator ==(const MyColor& other) const {
-        return color == other.color;
+        return color == other.color || (a | other.a) == 0;
     }
 
     inline bool operator !=(const MyColor& other) const {
-        return color != other.color;
+        return color != other.color && (a | other.a) != 0;
     }
 
     friend int operator -(MyColor a1, MyColor a2) {
@@ -206,7 +206,7 @@ static void image_scale2x_rgba(Image* dst, const Image* src, int src_w, int src_
             c3 = c2;
         }
 
-        if (isSameOrDiffLessThan(c5, c6, c5) || isSameOrDiffLessThan(c2, c5, c5)) {
+        if (c6 == c5 || c2 == c5) {
             dst0 << c5 << c5;
             dst1 << c5 << c5;
         } else {
@@ -214,8 +214,8 @@ static void image_scale2x_rgba(Image* dst, const Image* src, int src_w, int src_
             dst1 << c5;
 
             if (!isSameOrDiffLessThan(c2, c6, c5) ||
-                (isSameOrDiffLessThan(c5, c3, c5) && isSameOrDiffLessThan(c2, c0, c5)) ||
-                (isSameOrDiffLessThan(c5, c3, c5) && isSameOrDiffLessThan(c5, cT, c5) && isSameOrDiffLessThan(c2, cT, c5) && isSameOrDiffLessThan(c6, cT, c5))) {
+                (c3 == c5 && isSameOrDiffLessThan(c2, c0, c5)) ||
+                (c3 == c5 && cT == c5 && isSameOrDiffLessThan(c2, cT, c5) && isSameOrDiffLessThan(c6, cT, c5))) {
                 dst1 << c5;
             } else {
                 dst1 << c2;
@@ -228,23 +228,23 @@ static void image_scale2x_rgba(Image* dst, const Image* src, int src_w, int src_
             c4 = c5; c5 = c6; c6 << src0;
             c1 = c2; c2 = c3; c3 << src1;
 
-            if (isSameOrDiffLessThan(c4, c6, c5) || isSameOrDiffLessThan(c2, c5, c5)) {
+            if (isSameOrDiffLessThan(c4, c6, c5) || c2 == c5) {
                 dst0 << c5 << c5;
                 dst1 << c5 << c5;
             } else {
                 dst0 << c5 << c5;
 
                 if (!isSameOrDiffLessThan(c4, c2, c5) ||
-                    (isSameOrDiffLessThan(c5, c1, c5) && isSameOrDiffLessThan(c4, c0, c5)) ||
-                    (isSameOrDiffLessThan(c5, c1, c5) && isSameOrDiffLessThan(c5, cT, c5) && isSameOrDiffLessThan(c4, cT, c5) && isSameOrDiffLessThan(c2, c3, c5))) {
+                    (c1 == c5 && isSameOrDiffLessThan(c4, c0, c5)) ||
+                    (c1 == c5 && cT == c5 && isSameOrDiffLessThan(c4, cT, c5) && isSameOrDiffLessThan(c2, c3, c5))) {
                     dst1 << c5;
                 } else {
                     dst1 << c4;
                 }
 
                 if (!isSameOrDiffLessThan(c2, c6, c5) ||
-                    (isSameOrDiffLessThan(c5, c3, c5) && isSameOrDiffLessThan(c2, c0, c5)) ||
-                    (isSameOrDiffLessThan(c5, c3, c5) && isSameOrDiffLessThan(c5, cT, c5) && isSameOrDiffLessThan(c2, c1, c5) && isSameOrDiffLessThan(c6, cT, c5))) {
+                    (c3 == c5 && isSameOrDiffLessThan(c2, c0, c5)) ||
+                    (c3 == c5 && cT == c5 && isSameOrDiffLessThan(c2, c1, c5) && isSameOrDiffLessThan(c6, cT, c5))) {
                     dst1 << c5;
                 } else {
                     dst1 << c2;
@@ -257,15 +257,15 @@ static void image_scale2x_rgba(Image* dst, const Image* src, int src_w, int src_
             // c2 c3 => c1 < c2 < c3
             c4 = c5; c5 = c6;
             c1 = c2; c2 = c3;
-            if (isSameOrDiffLessThan(c4, c5, c5) || isSameOrDiffLessThan(c2, c5, c5)) {
+            if (c4 == c5 || c2 == c5) {
                 dst0 << c5 << c5;
                 dst1 << c5 << c5;
             } else {
                 dst0 << c5 << c5;
 
                 if (!isSameOrDiffLessThan(c4, c2, c5) ||
-                    (isSameOrDiffLessThan(c5, c1, c5) && isSameOrDiffLessThan(c4, c0, c5)) ||
-                    (isSameOrDiffLessThan(c5, c1, c5) && isSameOrDiffLessThan(c5, cT, c5) && isSameOrDiffLessThan(c4, cT, c5) && isSameOrDiffLessThan(c2, cT, c5))) {
+                    (c1 == c5 && isSameOrDiffLessThan(c4, c0, c5)) ||
+                    (c1 == c5 && cT == c5 && isSameOrDiffLessThan(c4, cT, c5) && isSameOrDiffLessThan(c2, cT, c5))) {
                     dst1 << c5 << c5;
                 } else {
                     dst1 << c4 << c5;
@@ -299,15 +299,15 @@ static void image_scale2x_rgba(Image* dst, const Image* src, int src_w, int src_
             c3 = c2;
         }
 
-        if (isSameOrDiffLessThan(c5, c6, c5) || isSameOrDiffLessThan(c2, c8, c5)) {
+        if (c6 == c5 || isSameOrDiffLessThan(c2, c8, c5)) {
             dst0 << c5 << c5;
             dst1 << c5 << c5;
         } else {
             dst0 << c5;
 
             if (!isSameOrDiffLessThan(c6, c8, c5) ||
-                (isSameOrDiffLessThan(c5, c9, c5) && isSameOrDiffLessThan(c6, c0, c5)) ||
-                (isSameOrDiffLessThan(c5, c9, c5) && isSameOrDiffLessThan(c5, cT, c5) && isSameOrDiffLessThan(c6, c3, c5) && isSameOrDiffLessThan(c8, cT, c5))) {
+                (c9 == c5 && isSameOrDiffLessThan(c6, c0, c5)) ||
+                (c9 == c5 && cT == c5 && isSameOrDiffLessThan(c6, c3, c5) && isSameOrDiffLessThan(c8, cT, c5))) {
                 dst0 << c5;
             } else {
                 dst0 << c6;
@@ -316,8 +316,8 @@ static void image_scale2x_rgba(Image* dst, const Image* src, int src_w, int src_
             dst1 << c5;
 
             if (!isSameOrDiffLessThan(c2, c6, c5) ||
-                (isSameOrDiffLessThan(c5, c3, c5) && isSameOrDiffLessThan(c2, c0, c5)) ||
-                (isSameOrDiffLessThan(c5, c3, c5) && isSameOrDiffLessThan(c5, cT, c5) && isSameOrDiffLessThan(c2, cT, c5) && isSameOrDiffLessThan(c6, c9, c5))) {
+                (c3 == c5 && isSameOrDiffLessThan(c2, c0, c5)) ||
+                (c3 == c5 && cT == c5 && isSameOrDiffLessThan(c2, cT, c5) && isSameOrDiffLessThan(c6, c9, c5))) {
                 dst1 << c5;
             } else {
                 dst1 << c2;
@@ -334,40 +334,40 @@ static void image_scale2x_rgba(Image* dst, const Image* src, int src_w, int src_
 
             if (isSameOrDiffLessThan(c4, c6, c5) ||
                 isSameOrDiffLessThan(c2, c8, c5) ||
-                ((!isSameOrDiffLessThan(c5, c4, c5) && !isSameOrDiffLessThan(c5, c2, c5) && !isSameOrDiffLessThan(c5, c6, c5) && !isSameOrDiffLessThan(c5, c8, c5))
-                    && ((isSameOrDiffLessThan(c7, c3, c5) && !isSameOrDiffLessThan(c5, c1, c5) && !isSameOrDiffLessThan(c5, c9, c5))
-                        || (isSameOrDiffLessThan(c1, c9, c5) && !isSameOrDiffLessThan(c5, c7, c5) && !isSameOrDiffLessThan(c5, c3, c5))))
+                ((c4 != c5 && c2 != c5 && c6 != c5 && c8 != c5)
+                    && ((isSameOrDiffLessThan(c7, c3, c5) && c1 != c5 && c9 != c5)
+                        || (isSameOrDiffLessThan(c1, c9, c5) && c7 != c5 && c3 != c5)))
                 ) {
                 dst0 << c5 << c5;
                 dst1 << c5 << c5;
             } else {
                 if (!isSameOrDiffLessThan(c8, c4, c5) ||
-                    (isSameOrDiffLessThan(c5, c7, c5) && isSameOrDiffLessThan(c8, c0, c5)) ||
-                    (isSameOrDiffLessThan(c5, c7, c5) && isSameOrDiffLessThan(c5, c3, c5) && isSameOrDiffLessThan(c8, c9, c5) && isSameOrDiffLessThan(c4, c1, c5))) {
+                    (c7 == c5 && isSameOrDiffLessThan(c8, c0, c5)) ||
+                    (c7 == c5 && c3 == c5 && isSameOrDiffLessThan(c8, c9, c5) && isSameOrDiffLessThan(c4, c1, c5))) {
                     dst0 << c5;
                 } else {
                     dst0 << c8;
                 }
 
                 if (!isSameOrDiffLessThan(c6, c8, c5) ||
-                    (isSameOrDiffLessThan(c5, c9, c5) && isSameOrDiffLessThan(c6, c0, c5)) ||
-                    (isSameOrDiffLessThan(c5, c9, c5) && isSameOrDiffLessThan(c5, c1, c5) && isSameOrDiffLessThan(c6, c3, c5) && isSameOrDiffLessThan(c8, c7, c5))) {
+                    (c9 == c5 && isSameOrDiffLessThan(c6, c0, c5)) ||
+                    (c9 == c5 && c1 == c5 && isSameOrDiffLessThan(c6, c3, c5) && isSameOrDiffLessThan(c8, c7, c5))) {
                     dst0 << c5;
                 } else {
                     dst0 << c6;
                 }
 
                 if (!isSameOrDiffLessThan(c4, c2, c5) ||
-                    (isSameOrDiffLessThan(c5, c1, c5) && isSameOrDiffLessThan(c4, c0, c5)) ||
-                    (isSameOrDiffLessThan(c5, c1, c5) && isSameOrDiffLessThan(c5, c9, c5) && isSameOrDiffLessThan(c4, c7, c5) && isSameOrDiffLessThan(c2, c3, c5))) {
+                    (c1 == c5 && isSameOrDiffLessThan(c4, c0, c5)) ||
+                    (c1 == c5 && c9 == c5 && isSameOrDiffLessThan(c4, c7, c5) && isSameOrDiffLessThan(c2, c3, c5))) {
                     dst1 << c5;
                 } else {
                     dst1 << c4;
                 }
 
                 if (!isSameOrDiffLessThan(c2, c6, c5) ||
-                    (isSameOrDiffLessThan(c5, c3, c5) && isSameOrDiffLessThan(c2, c0, c5)) ||
-                    (isSameOrDiffLessThan(c5, c3, c5) && isSameOrDiffLessThan(c5, c7, c5) && isSameOrDiffLessThan(c2, c1, c5) && isSameOrDiffLessThan(c6, c9, c5))) {
+                    (c3 == c5 && isSameOrDiffLessThan(c2, c0, c5)) ||
+                    (c3 == c5 && c7 == c5 && isSameOrDiffLessThan(c2, c1, c5) && isSameOrDiffLessThan(c6, c9, c5))) {
                     dst1 << c5;
                 } else {
                     dst1 << c2;
@@ -383,13 +383,13 @@ static void image_scale2x_rgba(Image* dst, const Image* src, int src_w, int src_
             c4 = c5; c5 = c6;
             c1 = c2; c2 = c3;
 
-            if (isSameOrDiffLessThan(c4, c5, c5) || isSameOrDiffLessThan(c2, c8, c5)) {
+            if (c4 == c5 || isSameOrDiffLessThan(c2, c8, c5)) {
                 dst0 << c5 << c5;
                 dst1 << c5 << c5;
             } else {
                 if (!isSameOrDiffLessThan(c8, c4, c5) ||
-                    (isSameOrDiffLessThan(c5, c7, c5) && isSameOrDiffLessThan(c8, c0, c5)) ||
-                    (isSameOrDiffLessThan(c5, c7, c5) && isSameOrDiffLessThan(c5, cT, c5) && isSameOrDiffLessThan(c8, cT, c5) && isSameOrDiffLessThan(c4, c1, c5))) {
+                    (c7 == c5 && isSameOrDiffLessThan(c8, c0, c5)) ||
+                    (c7 == c5 && cT == c5 && isSameOrDiffLessThan(c8, cT, c5) && isSameOrDiffLessThan(c4, c1, c5))) {
                     dst0 << c5;
                 } else {
                     dst0 << c8;
@@ -397,8 +397,8 @@ static void image_scale2x_rgba(Image* dst, const Image* src, int src_w, int src_
                 dst0 << c5;
 
                 if (!isSameOrDiffLessThan(c4, c2, c5) ||
-                    (isSameOrDiffLessThan(c5, c1, c5) && isSameOrDiffLessThan(c4, c0, c5)) ||
-                    (isSameOrDiffLessThan(c5, c1, c5) && isSameOrDiffLessThan(c5, cT, c5) && isSameOrDiffLessThan(c4, c7, c5) && isSameOrDiffLessThan(c2, cT, c5))) {
+                    (c1 == c5 && isSameOrDiffLessThan(c4, c0, c5)) ||
+                    (c1 == c5 && cT == c5 && isSameOrDiffLessThan(c4, c7, c5) && isSameOrDiffLessThan(c2, cT, c5))) {
                     dst1 << c5;
                 } else {
                     dst1 << c4;
@@ -428,13 +428,13 @@ static void image_scale2x_rgba(Image* dst, const Image* src, int src_w, int src_
             c6 = c5;
         }
 
-        if (isSameOrDiffLessThan(c5, c6, c5) || isSameOrDiffLessThan(c5, c8, c5)) {
+        if (c6 == c5 || c8 == c5) {
             dst0 << c5 << c5;
         } else {
             dst0 << c5;
             if (!isSameOrDiffLessThan(c6, c8, c5) ||
-                (isSameOrDiffLessThan(c5, c9, c5) && isSameOrDiffLessThan(c6, c0, c5)) ||
-                (isSameOrDiffLessThan(c5, c9, c5) && isSameOrDiffLessThan(c5, cT, c5) && isSameOrDiffLessThan(c6, cT, c5) && isSameOrDiffLessThan(c8, c7, c5))) {
+                (c9 == c5 && isSameOrDiffLessThan(c6, c0, c5)) ||
+                (c9 == c5 && cT == c5 && isSameOrDiffLessThan(c6, cT, c5) && isSameOrDiffLessThan(c8, c7, c5))) {
                 dst0 << c5;
             } else {
                 dst0 << c6;
@@ -449,20 +449,20 @@ static void image_scale2x_rgba(Image* dst, const Image* src, int src_w, int src_
             c7 = c8; c8 = c9; c9 << srcUp;
             c4 = c5; c5 = c6; c6 << src0;
 
-            if (isSameOrDiffLessThan(c4, c6, c5) || isSameOrDiffLessThan(c5, c8, c5)) {
+            if (isSameOrDiffLessThan(c4, c6, c5) || c8 == c5) {
                 dst0 << c5 << c5;
             } else {
                 if (!isSameOrDiffLessThan(c8, c4, c5) ||
-                    (isSameOrDiffLessThan(c5, c7, c5) && isSameOrDiffLessThan(c8, c0, c5)) ||
-                    (isSameOrDiffLessThan(c5, c7, c5) && isSameOrDiffLessThan(c5, cT, c5) && isSameOrDiffLessThan(c8, c9, c5) && isSameOrDiffLessThan(c4, cT, c5))) {
+                    (c7 == c5 && isSameOrDiffLessThan(c8, c0, c5)) ||
+                    (c7 == c5 && cT == c5 && isSameOrDiffLessThan(c8, c9, c5) && isSameOrDiffLessThan(c4, cT, c5))) {
                     dst0 << c5;
                 } else {
                     dst0 << c8;
                 }
 
                 if (!isSameOrDiffLessThan(c6, c8, c5) ||
-                    (isSameOrDiffLessThan(c5, c9, c5) && isSameOrDiffLessThan(c6, c0, c5)) ||
-                    (isSameOrDiffLessThan(c5, c9, c5) && isSameOrDiffLessThan(c5, cT, c5) && isSameOrDiffLessThan(c6, cT, c5) && isSameOrDiffLessThan(c8, c7, c5))) {
+                    (c9 == c5 && isSameOrDiffLessThan(c6, c0, c5)) ||
+                    (c9 == c5 && cT == c5 && isSameOrDiffLessThan(c6, cT, c5) && isSameOrDiffLessThan(c8, c7, c5))) {
                     dst0 << c5;
                 } else {
                     dst0 << c6;
@@ -476,13 +476,13 @@ static void image_scale2x_rgba(Image* dst, const Image* src, int src_w, int src_
         // src0:  c4 < c5 < c6
         c4 = c5; c5 = c6;
         c7 = c8; c8 = c9;
-        if (isSameOrDiffLessThan(c5, c6, c5) || isSameOrDiffLessThan(c5, c8, c5)) {
+        if (c6 == c5 || c8 == c5) {
             dst0 << c5 << c5;
             dst1 << c5;
         } else {
             if (!isSameOrDiffLessThan(c8, c4, c5) ||
-                (isSameOrDiffLessThan(c5, c7, c5) && isSameOrDiffLessThan(c8, c0, c5)) ||
-                (isSameOrDiffLessThan(c5, c7, c5) && isSameOrDiffLessThan(c5, cT, c5) && isSameOrDiffLessThan(c8, cT, c5) && isSameOrDiffLessThan(c4, c1, c5))) {
+                (c7 == c5 && isSameOrDiffLessThan(c8, c0, c5)) ||
+                (c7 == c5 && cT == c5 && isSameOrDiffLessThan(c8, cT, c5) && isSameOrDiffLessThan(c4, c1, c5))) {
                 dst0 << c5;
             } else {
                 dst0 << c8;
